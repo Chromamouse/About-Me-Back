@@ -1,23 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { OmitType, PickType, PartialType } from '@nestjs/swagger';
+import { Article } from '../../../model/article';
 
-export class ArticleResponseDto {
-  @ApiProperty({
-    example: '5e1f0a2b-0001-4000-8000-000000000003',
-    format: 'uuid',
-  })
-  id: string;
+export class ArticleResponseDto extends PickType(Article, [
+  'id',
+  'title',
+  'text',
+  'publishedAt',
+] as const) {}
 
-  @ApiProperty({ example: 'Learning Prisma' })
-  title: string;
+export class CreateArticleDto extends OmitType(Article, [
+  'id',
+  'publishedAt',
+] as const) {}
 
-  @ApiProperty({
-    example: 'An introduction to database models, migrations, and queries.',
-  })
-  text: string;
-
-  @ApiProperty({
-    example: '2026-03-20T10:00:00.000Z',
-    format: 'date-time',
-  })
-  publishedAt: Date;
-}
+export class UpdateArticleDto extends PartialType(CreateArticleDto) {}
