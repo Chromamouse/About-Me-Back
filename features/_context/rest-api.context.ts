@@ -91,6 +91,14 @@ Given('I use destructive actions token', async () => {
   apiToken = 'destructive-actions-token';
 });
 
+Given('I use no token', async () => {
+  apiToken = '';
+});
+
+Given('I use a wrong token', async () => {
+  apiToken = 'wrong-token';
+});
+
 When(
   'I send a {string} request to {string}',
   async (method: string, path: string) => {
@@ -99,7 +107,10 @@ When(
       method: method,
       url: url,
       validateStatus: () => true,
-      headers: apiToken === '' ? {} : { Authorization: `Bearer ${apiToken}` },
+      headers:
+        apiToken === null || apiToken === ''
+          ? {}
+          : { Authorization: `Bearer ${apiToken}` },
     });
   },
 );
@@ -111,9 +122,16 @@ When(
     apiResponse = await axios.request({
       method: method,
       url: url,
-      data: JSON.parse(body),
+      data: JSON.parse(
+        body.replace(/"@characters\((\d+)\)"/g, (_match, length: string) =>
+          JSON.stringify('x'.repeat(Number(length))),
+        ),
+      ),
       validateStatus: () => true,
-      headers: apiToken === '' ? {} : { Authorization: `Bearer ${apiToken}` },
+      headers:
+        apiToken === null || apiToken === ''
+          ? {}
+          : { Authorization: `Bearer ${apiToken}` },
     });
   },
 );

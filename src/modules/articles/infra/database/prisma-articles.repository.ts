@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../../core/prisma/prisma.service';
 import type { Article } from '../../model/article';
 
+type ArticleWriteData = Pick<Article, 'title' | 'text'>;
+
 @Injectable()
 export class PrismaArticlesRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -14,6 +16,25 @@ export class PrismaArticlesRepository {
 
   async findById(id: string): Promise<Article | null> {
     return this.prisma.article.findUnique({
+      where: { id },
+    });
+  }
+
+  async create(data: ArticleWriteData): Promise<Article> {
+    return this.prisma.article.create({
+      data,
+    });
+  }
+
+  async update(id: string, data: Partial<ArticleWriteData>): Promise<Article> {
+    return this.prisma.article.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.article.delete({
       where: { id },
     });
   }
