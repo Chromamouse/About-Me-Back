@@ -20,6 +20,15 @@ export class PrismaArticlesRepository {
     });
   }
 
+  async exists(id: string): Promise<boolean> {
+    const article = await this.prisma.article.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    return article !== null;
+  }
+
   async create(data: ArticleWriteData): Promise<Article> {
     return this.prisma.article.create({
       data,

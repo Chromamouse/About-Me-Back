@@ -34,6 +34,15 @@ Feature: As the author of the blog I want to create articles through the API
       }
       """
     Then the response status should be 201
+    And the response body should contain:
+      """
+      {
+        "id": "@uuid",
+        "title": "abc",
+        "text": "x",
+        "publishedAt": "@date('within 1 minute from now')"
+      }
+      """
 
   Scenario: As the author I create an article with the longest valid fields
     Given I use seed data
